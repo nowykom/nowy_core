@@ -106,7 +106,7 @@ class Build : NukeBuild
 
             string[] projects = new[]
             {
-                "Nowy.UI.Bootstrap",
+                "Nowy.Standard",
             };
 
             foreach (string project in projects)
