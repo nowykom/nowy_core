@@ -46,5 +46,6 @@ jobs:
         run: cd nowy_core; export PATH="$PATH:$HOME/.dotnet/tools"; ./build.cmd CiGithubActionsLinux
         env:
           NuGetAzureDevOpsPassword: ${{ secrets.NUGET_AZUREDEVOPS_PASSWORD }}
+          NuGetOrgApiKey: ${{ secrets.NUGET_ORG_APIKEY }}
           ANDROID_SDK_ROOT: /home/tobias/AndroidSDK
 
