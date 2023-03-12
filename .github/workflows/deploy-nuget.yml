@@ -45,9 +45,6 @@ jobs:
       - name: Install Workloads
         run: cd nowy_core; echo -n | sudo ~/.dotnet/dotnet workload install android
 
-      - name: Cleanup
-        run: sudo rm -rf /tmp/NuGetScratch ; dotnet nuget locals all --clear
-
       - name: Run './build.cmd CiGithubActionsLinux'
         run: cd nowy_core; export PATH="$PATH:$HOME/.dotnet/tools"; ./build.cmd CiGithubActionsLinux
         env:
