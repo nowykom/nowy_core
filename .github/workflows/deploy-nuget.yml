@@ -50,3 +50,6 @@ jobs:
           NuGetOrgApiKey: ${{ secrets.NUGET_ORG_APIKEY }}
           ANDROID_SDK_ROOT: /home/tobias/AndroidSDK
 
+      - name: Cleanup
+        if: always()
+        run: rm -rf nowy_core
