@@ -3,7 +3,6 @@ name: NuGet packages
 env:
   DOTNET_VERSION: '7.0.103'                 # set this to the .NET Core version to use
   BRANCH: ${{ github.ref_name }}
-  MSBUILDDISABLENODEREUSE: 1
 
 on:
   push:
