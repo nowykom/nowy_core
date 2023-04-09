@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Nowy.Standard;
 
-public static class NowyStandardExtensions
+public static class ServiceCollectionExtensions
 {
     public static void AddNowyStandard(this IServiceCollection services)
     {
