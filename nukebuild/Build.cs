@@ -72,6 +72,13 @@ class Build : NukeBuild
         Log.Information("Configuration:\t{Configuration}", Configuration);
     }
 
+    private AbsolutePath HomeDirectory => (AbsolutePath)(
+        ( Environment.OSVersion.Platform == PlatformID.Unix ||
+          Environment.OSVersion.Platform == PlatformID.MacOSX )
+            ? Environment.GetEnvironmentVariable("HOME")
+            : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%")
+    );
+
     Target ClearCache => _ => _
         .Executes(() =>
         {
