@@ -78,6 +78,7 @@ class Build : NukeBuild
             DotNetTasks.DotNet($"nuget locals http-cache --clear");
             DotNetTasks.DotNet($"nuget locals plugins-cache --clear");
             DotNetTasks.DotNet($"nuget locals temp --clear");
+            DeleteDirectory(HomeDirectory / ".dotnet" / "toolResolverCache");
         });
 
     Target Upgrade => _ => _
