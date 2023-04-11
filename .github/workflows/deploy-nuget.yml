@@ -56,3 +56,4 @@ jobs:
       - name: Cleanup
         if: always()
         run: rm -rf nowy_core
+
