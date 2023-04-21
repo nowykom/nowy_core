@@ -7,12 +7,10 @@ namespace Nowy.Standard;
 
 public static class ServiceCollectionHostedServiceExtensions
 {
-    public static void AddHostedService<TService, TImplementation>(this IServiceCollection services)
-        where TService : class
-        where TImplementation : class, IHostedService, TService
+    public static void AddHostedServiceByWrapper<TService>(this IServiceCollection services)
+        where TService : class, IHostedService
     {
-        services.AddSingleton<TService, TImplementation>();
-        services.AddHostedService<HostedServiceWrapper<TService>>();
+        services.AddHostedService<HostedServiceWrapper<TService>>(sp => new HostedServiceWrapper<TService>(sp.GetRequiredService<TService>()));
     }
 
     private class HostedServiceWrapper<TService> : IHostedService
@@ -21,7 +19,7 @@ public static class ServiceCollectionHostedServiceExtensions
 
         public HostedServiceWrapper(TService hostedService)
         {
-            this._hostedService = (IHostedService)hostedService;
+            _hostedService = (IHostedService)hostedService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
