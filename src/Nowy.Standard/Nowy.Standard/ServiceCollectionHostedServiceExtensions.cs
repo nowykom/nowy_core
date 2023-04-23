@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,26 +11,60 @@ public static class ServiceCollectionHostedServiceExtensions
     public static void AddHostedServiceByWrapper<TService>(this IServiceCollection services)
         where TService : class, IHostedService
     {
-        services.AddHostedService<HostedServiceWrapper<TService>>(sp => new HostedServiceWrapper<TService>(sp.GetRequiredService<TService>()));
+        if (typeof(BackgroundService).IsAssignableFrom(typeof(TService)))
+        {
+            services.AddHostedService(sp => new BackgroundServiceWrapper<TService>((BackgroundService)(object)sp.GetRequiredService<TService>()));
+        }
+        else
+        {
+            services.AddHostedService(sp => new HostedServiceWrapper<TService>(sp.GetRequiredService<TService>()));
+        }
+    }
+
+    private class BackgroundServiceWrapper<TService> : BackgroundService
+    {
+        private readonly BackgroundService _service;
+
+        public BackgroundServiceWrapper(BackgroundService service)
+        {
+            this._service = service;
+        }
+
+        public override Task StartAsync(CancellationToken cancellationToken)
+        {
+            return this._service.StartAsync(cancellationToken);
+        }
+
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            return this._service.StopAsync(cancellationToken);
+        }
+
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public override Task ExecuteTask => this._service.ExecuteTask;
     }
 
     private class HostedServiceWrapper<TService> : IHostedService
     {
-        private readonly IHostedService _hostedService;
+        private readonly IHostedService _service;
 
-        public HostedServiceWrapper(TService hostedService)
+        public HostedServiceWrapper(IHostedService service)
         {
-            _hostedService = (IHostedService)hostedService;
+            this._service = service;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            return this._hostedService.StartAsync(cancellationToken);
+            return this._service.StartAsync(cancellationToken);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            return this._hostedService.StopAsync(cancellationToken);
+            return this._service.StopAsync(cancellationToken);
         }
     }
 }
