@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -72,6 +73,15 @@ public static partial class StringExtensions
     public static string MakeRandomUuid()
     {
         return Guid.NewGuid().ToString("D");
+    }
+
+    private static SHA256? _sha256;
+
+    public static string MakeUuidFromString(string input)
+    {
+        _sha256 ??= SHA256.Create();
+        byte[] hash = _sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+        return new Guid(hash.AsSpan()[..16]).ToString("D");
     }
 
     public static string RemoveDiacritics(string s)
