@@ -177,11 +177,6 @@ class Build : NukeBuild
             (string, Dictionary<string, string>)[] projects = new[]
             {
                 ( "Nowy.Standard", new Dictionary<string, string>() ),
-                ( "Nowy.Standard", new Dictionary<string, string>()
-                {
-                    ["AssemblyName"] = "LR.Standard",
-                    ["PackageId"] = "LR.Standard",
-                } )
             };
 
             foreach (( string project, Dictionary<string, string> props ) in projects)
