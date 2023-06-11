@@ -17,7 +17,7 @@ gsed -i 's@nowy@lr@gm' .github/workflows/deploy-nuget.yml .nuke/parameters.json
 
 ../code-rename/coderename.pl "Nowy" "LR"
 
-gsed -i 's@lr/_packaging/LR/nuget/v3/index.json@nowy/_packaging/Nowy/nuget/v3/index.json@gm' nuget.config
+gsed -i 's@lr/_packaging/LR/nuget/v3/index.json@nowy/_packaging/Nowy/nuget/v3/index.json@gm' nuget.config nukebuild/Build.cs
 
 git add --all
 
