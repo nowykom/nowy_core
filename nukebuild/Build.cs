@@ -116,7 +116,7 @@ class Build : NukeBuild
         {
             DotNetTasks.DotNetRestore(s => s
                 .SetProjectFile(Solution));
-                
+
             _cleanOutdatedPackages();
 
             DotNetTasks.DotNetRestore(s => s
@@ -174,24 +174,38 @@ class Build : NukeBuild
         {
             EnsureCleanDirectory(ArtifactsDirectory);
 
-            string[] projects = new[]
+            (string, Dictionary<string, string>)[] projects = new[]
             {
-                "Nowy.Standard",
+                ( "Nowy.Standard", new Dictionary<string, string>() ),
+                ( "Nowy.Standard", new Dictionary<string, string>()
+                {
+                    ["AssemblyName"] = "LR.Standard",
+                    ["PackageId"] = "LR.Standard",
+                } )
             };
 
-            foreach (string project in projects)
+            foreach (( string project, Dictionary<string, string> props ) in projects)
             {
-                DotNetTasks.DotNetPack(s => s
-                    .SetProject(Solution.GetProject(project))
-                    // .SetAssemblyVersion(TagVersion)
-                    // .SetFileVersion(TagVersion)
-                    // .SetInformationalVersion(TagVersion)
-                    // .SetVersionSuffix(VersionSuffix)
-                    .SetConfiguration(Configuration)
-                    .SetOutputDirectory(ArtifactsDirectory)
-                    .SetDeterministic(IsServerBuild)
-                    .SetContinuousIntegrationBuild(IsServerBuild)
-                );
+                DotNetTasks.DotNetPack(s =>
+                {
+                    DotNetPackSettings result = s
+                        .SetProject(Solution.GetProject(project))
+                        // .SetAssemblyVersion(TagVersion)
+                        // .SetFileVersion(TagVersion)
+                        // .SetInformationalVersion(TagVersion)
+                        // .SetVersionSuffix(VersionSuffix)
+                        .SetConfiguration(Configuration)
+                        .SetOutputDirectory(ArtifactsDirectory)
+                        .SetDeterministic(IsServerBuild)
+                        .SetContinuousIntegrationBuild(IsServerBuild);
+
+                    foreach (KeyValuePair<string, string> p in props)
+                    {
+                        result = result.SetProperty(p.Key, p.Value);
+                    }
+
+                    return result;
+                });
             }
 
             try
